@@ -38,7 +38,7 @@ def nginx_error_parser(line, addcalltime=False):
 
 def nginx_access_parser(line, addcalltime=False):
     re_str = '^(?P<ip>[\d]{1,3}.[\d]{1,3}.[\d]{1,3}.[\d]{1,3}) - - \[(?P<date>[\w\W]+)\] "(?P<request>[\w\W^"]+)" (?P<status>[\d]{3}) (?P<proc>[\d]+) "(?P<server>[\w\W^"]+)" "(?P<useragent>[\w\W^"]+)'
-    re_str += " ([\d]+.[\d]+)$" if addcalltime else "$"
+    re_str += " (?P<calltime>[\d]+.[\d]+)$" if addcalltime else "$"
     m = re.search(re_str, line)
 
     dt = m.group('date')
@@ -47,6 +47,9 @@ def nginx_access_parser(line, addcalltime=False):
     dt = datetime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond, tzoffset(None, timedelta(hours=int(dt_str[1][0:-2]), minutes=int(dt_str[1][-2:])).total_seconds()))
 
     otherinfo = dict(ip=m.group('ip'), request_str=m.group('request'), status=m.group('status'), server=m.group('server'), useragent=m.group('useragent'))
+
+    if addcalltime:
+        otherinfo["call_time"] = m.group('calltime')
 
     otherinfo['log_level'] = logging.INFO
 
