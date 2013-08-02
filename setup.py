@@ -6,7 +6,7 @@ setup(
     author='Mauro De Giorgi',
     author_email='mauro.degiorgi@gmail.com',
     scripts=['bin/sentrylogs',],
-    packages=['sentrylogs', 'sentrylogs.conf', 'sentrylogs.parsers'],
+    packages=['sentrylogs', 'sentrylogs.parsers'],
     url='http://pypi.python.org/pypi/SentryLogs/',
     license='LICENSE.txt',
     description='Send logs to Django Sentry.',
