@@ -37,8 +37,8 @@ def nginx_error_parser(line, addcalltime=False):
     return date_time_message, otherinfo
 
 def nginx_access_parser(line, addcalltime=False):
-    re_str = '^(?P<ip>[\d]{1,3}.[\d]{1,3}.[\d]{1,3}.[\d]{1,3}) - - \[(?P<date>[\w\W]+)\] "(?P<request>[\w\W^"]+)" (?P<status>[\d]{3}) (?P<proc>[\d]+) "(?P<server>[\w\W^"]+)" "(?P<useragent>[\w\W^"]+)'
-    re_str += " (?P<calltime>[\d]+.[\d]+)$" if addcalltime else "$"
+    re_str = '^(?P<ip>[\d]{1,3}.[\d]{1,3}.[\d]{1,3}.[\d]{1,3})[\s]+-[\s]+-[\s]+\[(?P<date>[\w\W]+)\][\s]+"(?P<request>[\w\W^"]+)"[\s]+(?P<status>[\d]{3})[\s]+(?P<proc>[\d]+)[\s]+"(?P<server>[\w\W^"]+)"[\s]+"(?P<useragent>[\w\W^"]+)'
+    re_str += "[\s]+(?P<calltime>[\d]+.[\d]+)$ if addcalltime else "$"
     m = re.search(re_str, line)
 
     dt = m.group('date')
