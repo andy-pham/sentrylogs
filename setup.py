@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='SentryLogs',
-    version='0.0.9.1',
+    version='0.0.9.2',
     author='Mauro De Giorgi',
     author_email='mauro.degiorgi@gmail.com',
     scripts=['bin/sentrylogs',],
