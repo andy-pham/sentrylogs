@@ -8,7 +8,8 @@ def main():
     p.add_argument('--follow', '-f', default="all", help='Which logs to follow, default ALL')
     p.add_argument('--sentrydsn', '-s', default="", help='The Sentry DSN string')
     p.add_argument('--daemonize', '-d',  action='store_const', const=True, default=False, help='Run this script in background')
-    p.add_argument('--nginxerrorpath', '-n', default=False, help='Nginx error log path')
+    p.add_argument('--nginxerrorpath', '-e', default=False, help='Nginx error log path')
+    p.add_argument('--nginxaccesspath', '-a', default=False, help='Nginx access log path')
 
     options = p.parse_args()
 
@@ -19,6 +20,9 @@ def main():
     if options.nginxerrorpath:
         print "Using the Nginx error log path %s" % options.nginxerrorpath
         os.environ['NGINX_ERROR_PATH'] = options.nginxerrorpath
+    if options.nginxaccesspath:
+        print "Using the Nginx access log path %s" % options.nginxaccesspath
+        os.environ['NGINX_ACCESS_PATH'] = options.nginxaccesspath
     if options.daemonize:
         print "Process running in background"
         from sentrylogs.conf import settings

@@ -1,15 +1,21 @@
 from conf import client
+import logging
 
-def send_message(message, extended_message, params, site, logger):
+def send_message(message, params, site, logger,
+        interface_type="sentry.interfaces.Message",
+        log_level=logging.ERROR):
+    data={
+        'site': site,
+        'logger': logger,
+    }
+
+    data[interface_type] = message
+    subject = message.get("message", message.get("url", "Unknown Message"))
+
     client.capture(
         'Message',
-        message=message,
-        data={
-            'sentry.interfaces.Message': {
-                'message': extended_message,
-                'params': tuple(params)
-            },
-            'site': site,
-            'logger': logger,
-            },
+        message=subject,
+        data=data,
+        level=log_level,
+        extra=params
     )
