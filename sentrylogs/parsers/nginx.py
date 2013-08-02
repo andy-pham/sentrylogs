@@ -17,12 +17,10 @@ import logging
 from datetime import datetime, timedelta
 from dateutil.tz import tzoffset
 
-def nginx_error_parser(line):
+def nginx_error_parser(line, addcalltime=False):
     csv_list = line.split(",")
     date_time_message = csv_list.pop(0).split(" ",2)
     otherinfo = dict()
-
-    raise Exception(date_time_message[2])
 
     for l in csv_list:
         kv = l.split(":",1)
@@ -38,8 +36,10 @@ def nginx_error_parser(line):
 
     return date_time_message, otherinfo
 
-def nginx_access_parser(line):
-    m = re.search('^(?P<ip>[\d]{1,3}.[\d]{1,3}.[\d]{1,3}.[\d]{1,3}) - - \[(?P<date>[\w\W]+)\] "(?P<request>[\w\W^"]+)" (?P<status>[\d]{3}) (?P<proc>[\d]+) "(?P<server>[\w\W^"]+)" "(?P<useragent>[\w\W^"]+)$', line)
+def nginx_access_parser(line, addcalltime=False):
+    re_str = '^(?P<ip>[\d]{1,3}.[\d]{1,3}.[\d]{1,3}.[\d]{1,3}) - - \[(?P<date>[\w\W]+)\] "(?P<request>[\w\W^"]+)" (?P<status>[\d]{3}) (?P<proc>[\d]+) "(?P<server>[\w\W^"]+)" "(?P<useragent>[\w\W^"]+)'
+    re_str += " ([\d]+.[\d]+)$" if addcalltime else "$"
+    m = re.search(re_str, line)
 
     dt = m.group('date')
     dt_str = dt.split(" ")
