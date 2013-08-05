@@ -5,12 +5,13 @@
 # chkconfig: - 90 10
 # processname: nginx2sentry
 
+BASEPATH="https://staging.q.rackspace.com"
 ACCESSLOG=/var/log/nginx/access.log
 ERRORLOG=/var/log/nginx/error.log
 ACCESSPIDFILE="/var/run/nginx2sentryaccesslog.pid"
 ERRORPIDFILE="/var/run/nginx2sentryerrorlog.pid"
-ACCESS_CMD="sentrylogs --sentrydsn `cat /etc/.nginx.sentry.secret` --nginxaccesspath $ACCESSLOG --pidfile $ACCESSPIDFILE --calltime --daemonize"
-ERROR_CMD="sentrylogs --sentrydsn `cat /etc/.nginx.sentry.secret` --nginxerrorpath $ERRORLOG --pidfile $ERRORPIDFILE --calltime --daemonize"
+ACCESS_CMD="sentrylogs --sentrydsn `cat /etc/.nginx.sentry.secret` --nginxaccesspath $ACCESSLOG --pidfile $ACCESSPIDFILE --calltime --daemonize --basepath $BASEPATH"
+ERROR_CMD="sentrylogs --sentrydsn `cat /etc/.nginx.sentry.secret` --nginxerrorpath $ERRORLOG --pidfile $ERRORPIDFILE --calltime --daemonize --basepath $BASEPATH"
 
 start() {
     if [ -e $ACCESSPIDFILE ]; then

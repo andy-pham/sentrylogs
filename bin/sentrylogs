@@ -14,7 +14,7 @@ def main():
     p.add_argument('--nginxerrorpath', '-e', default=False, help='Nginx error log path')
     p.add_argument('--nginxaccesspath', '-a', default=False, help='Nginx access log path')
     p.add_argument('--pidfile', '-p', default=None, help='Daemon PID File Location')
-    p.add_argument('--basepath', '-b', default="http://localhost:5000/", help='Base Path to URL')
+    p.add_argument('--basepath', '-b', default="http://localhost:5000", help='Base Path to URL')
 
     options = p.parse_args()
 
