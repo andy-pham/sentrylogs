@@ -102,7 +102,7 @@ def createDaemon(pid_file=None):
          # a controlling terminal.
          pid = os.fork()	# Fork a second child.
          if pid_file:
-            open(pid, "w").write(pid)
+            open(pid, "w").write(str(pid))
       except OSError, e:
          raise Exception, "%s [%d]" % (e.strerror, e.errno)
 
