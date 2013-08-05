@@ -50,21 +50,25 @@ def nginx_access_parser(line, addcalltime=False, basepath="http://localhost:5000
     temp = m.group('request').split(" ")
     
     request_object["method"] = temp[0]
-    query_temp = temp[1].split("?")
-    request_object["url"] = "%s%s" % (basepath, query_temp[0])
-    if len(query_temp) > 1:
-        request_object["query_string"] = query_temp[1]
-        
-        q_temp = query_temp[1].split("&")
-        q_obj = {}
-        for q in q_temp:
-            if "=" in q:
-                k, v = q.split("=")
-                q_obj[k] = v
-        if not q_obj:
-            q_obj = "-"
-    else:
+    try:
+        query_temp = temp[1].split("?")
+    except:
         q_obj = "-"
+    else:
+        request_object["url"] = "%s%s" % (basepath, query_temp[0])
+        if len(query_temp) > 1:
+            request_object["query_string"] = query_temp[1]
+            
+            q_temp = query_temp[1].split("&")
+            q_obj = {}
+            for q in q_temp:
+                if "=" in q:
+                    k, v = q.split("=")
+                    q_obj[k] = v
+            if not q_obj:
+                q_obj = "-"
+        else:
+            q_obj = "-"
 
     otherinfo = dict(ip=m.group('ip'), request=request_object, status=m.group('status'), referrer=m.group('referrer'), useragent=m.group('useragent'), QueryObject=q_obj)
 
