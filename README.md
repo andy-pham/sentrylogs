@@ -36,7 +36,13 @@ This will install the module and you will have a new command line available::
       --daemonize, -d       Run this script in background
       --nginxerrorpath NGINXERRORPATH, -n NGINXERRORPATH
                             Nginx error log path
-
+      --nginxaccesspath NGINXACCESSPATH, -a NGINXACCESSPATH
+                            Nginx access log path
+      --calltime            Parse the call time from the log
+      --pidfile PIDFILELOCATION
+                            Used for the daemonizing pid file
+      --basepath BASEURLPATH
+                            Base URL Path to append to the url
 
 you must provide a Sentry DSN to make it works; at this moment you have 2 possibilities:
 
