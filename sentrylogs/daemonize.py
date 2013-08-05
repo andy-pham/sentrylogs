@@ -101,8 +101,6 @@ def createDaemon(pid_file=None):
          # longer a session leader, preventing the daemon from ever acquiring
          # a controlling terminal.
          pid = os.fork()	# Fork a second child.
-         if pid_file:
-            open(pid, "w").write(str(pid))
       except OSError, e:
          raise Exception, "%s [%d]" % (e.strerror, e.errno)
 
@@ -177,6 +175,9 @@ def createDaemon(pid_file=None):
    # Duplicate standard input to standard output and standard error.
    os.dup2(0, 1)			# standard output (1)
    os.dup2(0, 2)			# standard error (2)
+                                                
+   if pid_file:
+      open(pid_file, "w").write(str(os.getpid()))
 
    return(0)
 
