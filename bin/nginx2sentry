@@ -1,0 +1,133 @@
+#!/bin/sh
+#
+# nginx2sentry    Startup script for Sending Nginx Logs to Sentry Server
+#
+# chkconfig: - 90 10
+# processname: nginx2sentry
+
+ACCESSLOG=/var/log/nginx/access.log
+ERRORLOG=/var/log/nginx/error.log
+ACCESSPIDFILE="/var/run/nginx2sentryaccesslog.pid"
+ERRORPIDFILE="/var/run/nginx2sentryerrorlog.pid"
+ACCESS_CMD="sentrylogs --sentrydsn `cat /etc/.nginx.sentry.secret` --nginxaccesspath $ACCESSLOG --pidfile $ACCESSPIDFILE --calltime --daemonize"
+ERROR_CMD="sentrylogs --sentrydsn `cat /etc/.nginx.sentry.secret` --nginxerrorpath $ERRORLOG --pidfile $ERRORPIDFILE --calltime --daemonize"
+
+start() {
+    if [ -e $ACCESSPIDFILE ]; then
+        if [ -e $ERRORPIDFILE ]; then
+            echo "Nginx2Sentry already running"
+        else
+            echo "Nginx2Sentry [AccessLog] already running, need [ErrorLog]"
+            
+            $ERROR_CMD
+        
+            if [ $? = 0 ]; then
+                echo "Nginx2Sentry started"
+                return 0
+            else
+                echo "Nginx2Sentry [AccessLog] could not be started"
+                return 2
+            fi
+        fi
+        return 1
+    fi
+
+    $ACCESS_CMD
+
+    if [ $? = 0 ]; then
+        $ERROR_CMD
+        
+        if [ $? = 0 ]; then
+            echo "Nginx2Sentry started"
+            return 0
+        else
+            echo "Nginx2Sentry [AccessLog] could not be started"
+            return 2
+        fi
+    else
+        echo "Nginx2Sentry [AccessLog] could not be started"
+        return 2
+    fi
+}
+
+stop() {
+    if [ -f $ACCESSPIDFILE ]; then
+        ACCESSPID=`cat $ACCESSPIDFILE`
+        kill -15 $ACCESSPID
+        rm $ACCESSPIDFILE
+
+        if [ $? = 0 ]; then
+            if [ -f $ERRORPIDFILE ]; then
+                ERRORPID=`cat $ERRORPIDFILE`
+                kill -15 $ERRORPID
+                rm $ERRORPIDFILE
+                
+                if [ $? = 0 ]; then
+                  echo "Nginx2Sentry stopped"
+                  return 0
+                else
+                  echo "Nginx2Sentry [ErrorLog] could not be stopped"
+                  return 2
+                fi
+            fi
+        else
+            echo "Nginx2Sentry [ErrorLog] could not be stopped"
+            return 2
+        fi
+    else
+        echo "Nginx2Sentry not running"
+        return 1
+    fi
+}
+
+reload() {
+  if [ -f $ACCESSPIDFILE ]; then
+    ACCESSPID=`cat $ACCESSPIDFILE`
+    kill -HUP $ACCESSPID
+    if [ -f $ERRORPIDFILE ]; then
+        ACCESSPID=`cat $ACCESSPIDFILE`
+        kill -HUP $ACCESSPID
+        
+        return $?
+    fi
+    
+    return $?
+  fi
+  return 2
+}
+
+status() {
+    if [ -f $ACCESSPIDFILE ]; then
+        if [ -f $ERRORPIDFILE ]; then
+            echo "Nginx2Sentry running"
+        else
+            echo "Nginx2Sentry [AccessLog Only] running"
+        fi
+    else
+        echo "Nginx2Sentry not running"
+    fi
+}
+
+case "$1" in
+        start)
+            start
+            ;;
+
+        stop)
+            stop
+            ;;
+        restart)
+            stop
+            start
+            ;;
+        reload)
+            reload
+            ;;
+	    status)
+	        status
+            ;;
+        *)
+            echo "Usage: $0 {start|stop|restart}"
+            exit 1
+
+esac
