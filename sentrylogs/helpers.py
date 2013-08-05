@@ -14,7 +14,12 @@ def send_message(message, params, site, logger,
     else:
         raise Exception("No Sentry DSN")
 
-    data[interface_type] = message
+    if "request" in params.keys():
+        interface_type = "sentry.interfaces.Http"
+        data[interface_type] = params["request"]
+    else:
+        data[interface_type] = message
+        
     subject = message.get("message", message.get("url", "Unknown Message"))
 
     client.capture(

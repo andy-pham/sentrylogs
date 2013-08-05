@@ -49,11 +49,11 @@ def nginx_access_parser(line, addcalltime=False, basepath="http://localhost:5000
     request_object = {}
     temp = m.group('request').split(" ")
     
-    request_object["Method"] = temp[0]
+    request_object["method"] = temp[0]
     query_temp = temp[1].split("?")
-    request_object["URL"] = "%s%s" % (basepath, query_temp[0])
+    request_object["url"] = "%s%s" % (basepath, query_temp[0])
     if len(query_temp) > 1:
-        request_object["Query"] = query_temp[1]
+        request_object["query_string"] = query_temp[1]
         
         q_temp = query_temp[1].split("&")
         q_obj = {}
