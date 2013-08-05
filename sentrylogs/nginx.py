@@ -29,7 +29,7 @@ def nginx(opts=None):
         for line in tailer.follow(open(filepath)):
 
             # create the message
-            date_time_message, otherinfo = parser(line, addcalltime=opts.calltime)
+            date_time_message, otherinfo = parser(line, addcalltime=opts.calltime, basepath=opts.basepath)
             params = {
 		         "message": date_time_message[2],
                          "date": date_time_message[0],

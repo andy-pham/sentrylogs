@@ -36,8 +36,8 @@ def nginx_error_parser(line, addcalltime=False):
 
     return date_time_message, otherinfo
 
-def nginx_access_parser(line, addcalltime=False):
-    re_str = '^(?P<ip>[\d]{1,3}.[\d]{1,3}.[\d]{1,3}.[\d]{1,3})[\s]+-[\s]+-[\s]+\[(?P<date>[\w\W]+)\][\s]+"(?P<request>[\w\W^"]+)"[\s]+(?P<status>[\d]{3})[\s]+(?P<proc>[\d]+)[\s]+"(?P<server>[\w\W^"]+)"[\s]+"(?P<useragent>[\w\W^"]+)'
+def nginx_access_parser(line, addcalltime=False, basepath="http://localhost:5000"):
+    re_str = '^(?P<ip>[\d]{1,3}.[\d]{1,3}.[\d]{1,3}.[\d]{1,3})[\s]+-[\s]+-[\s]+\[(?P<date>[\w\W]+)\][\s]+"(?P<request>[\w\W^"]+)"[\s]+(?P<status>[\d]{3})[\s]+(?P<proc>[\d]+)[\s]+"(?P<referrer>[\w\W^"]+)"[\s]+"(?P<useragent>[\w\W^"]+)'
     re_str += '[\s]+(?P<calltime>[\d]+.[\d]+)$' if addcalltime else "$"
     m = re.search(re_str, line)
 
@@ -45,8 +45,25 @@ def nginx_access_parser(line, addcalltime=False):
     dt_str = dt.split(" ")
     dt = datetime.strptime(dt_str[0], "%d/%b/%Y:%H:%M:%S")
     dt = datetime(dt.year, dt.month, dt.day, dt.hour, dt.minute, dt.second, dt.microsecond, tzoffset(None, timedelta(hours=int(dt_str[1][0:-2]), minutes=int(dt_str[1][-2:])).total_seconds()))
+    
+    request_object = {}
+    temp = m.group('request').split(" ")
+    
+    request_object["Method"] = temp[0]
+    query_temp = temp[1].split("?")
+    request_object["URL"] = "%s%s" % (basepath, query_temp[0])
+    if len(query_temp) > 1:
+        request_object["Query"] = query_temp[1]
+        
+        q_temp = query_temp[1].split("&")
+        q_obj = {}
+        for q in q_temp:
+            k, v = q.split("=")
+            q_obj[k] = v
+    else:
+        q_obj = "-"
 
-    otherinfo = dict(ip=m.group('ip'), request_str=m.group('request'), status=m.group('status'), server=m.group('server'), useragent=m.group('useragent'))
+    otherinfo = dict(ip=m.group('ip'), request=request_object, status=m.group('status'), referrer=m.group('referrer'), useragent=m.group('useragent'), queue_views=q_obj)
 
     if addcalltime:
         otherinfo["call_time"] = m.group('calltime')
