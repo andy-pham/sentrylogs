@@ -58,8 +58,11 @@ def nginx_access_parser(line, addcalltime=False, basepath="http://localhost:5000
         q_temp = query_temp[1].split("&")
         q_obj = {}
         for q in q_temp:
-            k, v = q.split("=")
-            q_obj[k] = v
+            if "=" in q:
+                k, v = q.split("=")
+                q_obj[k] = v
+        if not q_obj:
+            q_obj = "-"
     else:
         q_obj = "-"
 
