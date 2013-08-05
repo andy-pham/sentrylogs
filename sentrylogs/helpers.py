@@ -21,7 +21,9 @@ def send_message(message, params, site, logger,
         data[interface_type] = message
     
     if params["QueryObject"] and params["QueryObject"] != "-":
-        data["tags"] = params["QueryObject"]
+        tags = params["QueryObject"]
+    else:
+        tags = None
     
     subject = message.get("message", message.get("url", "Unknown Message"))
 
@@ -30,5 +32,6 @@ def send_message(message, params, site, logger,
         message=subject,
         data=data,
         level=log_level,
-        extra=params
+        extra=params,
+        tags=tags
     )
