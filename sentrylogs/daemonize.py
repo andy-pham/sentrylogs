@@ -41,7 +41,7 @@ if (hasattr(os, "devnull")):
 else:
    REDIRECT_TO = "/dev/null"
 
-def createDaemon():
+def createDaemon(pid_file=None):
    """Detach a process from the controlling terminal and run it in the
    background as a daemon.
    """
@@ -101,6 +101,8 @@ def createDaemon():
          # longer a session leader, preventing the daemon from ever acquiring
          # a controlling terminal.
          pid = os.fork()	# Fork a second child.
+         if pid_file:
+            open(pid, "w").write(pid)
       except OSError, e:
          raise Exception, "%s [%d]" % (e.strerror, e.errno)
 
