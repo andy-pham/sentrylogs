@@ -11,6 +11,7 @@ setup(
     license='LICENSE.txt',
     description='Send logs to Django Sentry.',
     long_description=open('README.md').read(),
+    data_files=[('/etc/init.d', ['bin/nginx2sentry'])],
     install_requires=[
         "raven >= 2.0.10",
         "tailer >= 0.3",
