@@ -66,7 +66,7 @@ def nginx_access_parser(line, addcalltime=False, basepath="http://localhost:5000
     else:
         q_obj = "-"
 
-    otherinfo = dict(ip=m.group('ip'), request=request_object, status=m.group('status'), referrer=m.group('referrer'), useragent=m.group('useragent'), queue_views=q_obj)
+    otherinfo = dict(ip=m.group('ip'), request=request_object, status=m.group('status'), referrer=m.group('referrer'), useragent=m.group('useragent'), QueryObject=q_obj)
 
     if addcalltime:
         otherinfo["call_time"] = m.group('calltime')
