@@ -20,7 +20,7 @@ def send_message(message, params, site, logger,
     else:
         data[interface_type] = message
     
-    if params["QueryObject"]:
+    if params["QueryObject"] and params["QueryObject"] != "-":
         data["tags"] = params["QueryObject"]
     
     subject = message.get("message", message.get("url", "Unknown Message"))
