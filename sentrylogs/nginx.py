@@ -58,6 +58,8 @@ def nginx(opts=None):
         if opts.parsehistory:
             # We're going to zcat all the log files and then
             for f in glob.glob(filepath+"*"):
+                print "Parsing File: %s" % f
+                
                 if f.endswith(".gz"):
                     proc = subprocess.Popen(['zcat', f], stdout=subprocess.PIPE)
                     file = proc.stdout

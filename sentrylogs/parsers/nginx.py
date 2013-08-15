@@ -69,6 +69,7 @@ def nginx_access_parser(line, addcalltime=False, basepath="http://localhost:5000
                 q_obj = "-"
         else:
             q_obj = "-"
+    request_object["User-Agent"] = m.group('useragent')
 
     otherinfo = dict(ip=m.group('ip'), request=request_object, status=m.group('status'), referrer=m.group('referrer'), useragent=m.group('useragent'), QueryObject=q_obj)
 
