@@ -1,5 +1,6 @@
 from raven import Client
 import logging
+import datetime
 
 def send_message(message, params, site, logger,
         interface_type="sentry.interfaces.Message",
@@ -25,6 +26,8 @@ def send_message(message, params, site, logger,
     else:
         tags = None
     
+    date = datetime.datetime.strptime("%s %s" % (params["date"],params["time"]), "%Y/%b/%d %H:%M:%S")
+    
     subject = message.get("message", message.get("url", "Unknown Message"))
 
     client.capture(
@@ -33,5 +36,6 @@ def send_message(message, params, site, logger,
         data=data,
         level=log_level,
         extra=params,
-        tags=tags
+        tags=tags,
+        date=date
     )

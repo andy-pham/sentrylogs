@@ -15,6 +15,7 @@ def main():
     p.add_argument('--nginxaccesspath', '-a', default=False, help='Nginx access log path')
     p.add_argument('--pidfile', '-p', default=None, help='Daemon PID File Location')
     p.add_argument('--basepath', '-b', default="http://localhost:5000", help='Base Path to URL')
+    p.add_argument('--parsehistory', '-i', action='store_const', const=True, default=False, help='Parse Historical Log Data')
 
     options = p.parse_args()
 
@@ -29,7 +30,9 @@ def main():
         nginx_access_path = options.nginxaccesspath
     if options.calltime:
         print "Logging Call Time"
-    if options.daemonize:
+    if options.parsehistory:
+        print "Parsing Historical Logs"
+    elif options.daemonize:
         print "Process running in background"
         from sentrylogs.daemonize import createDaemon
         createDaemon(pid_file=options.pidfile)
