@@ -31,6 +31,11 @@ def send_message(message, params, site, logger,
             tags = {}
         tags["UrlPath"] = params["urlpath"]
     
+    if params["ip"] and params["ip"] != "-":
+        if not tags:
+            tags = {}
+        tags["UserIP"] = params["ip"]
+    
     date = datetime.datetime.strptime("%s %s" % (params["date"],params["time"]), "%Y/%b/%d %H:%M:%S")
     
     subject = message.get("message", message.get("url", "Unknown Message"))
