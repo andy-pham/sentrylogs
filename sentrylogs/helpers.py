@@ -25,6 +25,11 @@ def send_message(message, params, site, logger,
         tags = params["QueryObject"]
     else:
         tags = None
+        
+    if params["urlpath"] and params["urlpath"] != "-":
+        if not tags:
+            tags = {}
+        tags["UrlPath"] = params["urlpath"]
     
     date = datetime.datetime.strptime("%s %s" % (params["date"],params["time"]), "%Y/%b/%d %H:%M:%S")
     

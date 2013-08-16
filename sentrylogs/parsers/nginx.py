@@ -50,12 +50,14 @@ def nginx_access_parser(line, addcalltime=False, basepath="http://localhost:5000
     temp = m.group('request').split(" ")
     
     request_object["method"] = temp[0]
+    path = "-"
     try:
         query_temp = temp[1].split("?")
     except:
         q_obj = "-"
     else:
         request_object["url"] = "%s%s" % (basepath, query_temp[0])
+        path = query_temp[0]
         if len(query_temp) > 1:
             request_object["query_string"] = query_temp[1]
             
@@ -71,7 +73,7 @@ def nginx_access_parser(line, addcalltime=False, basepath="http://localhost:5000
             q_obj = "-"
     request_object["User-Agent"] = m.group('useragent')
 
-    otherinfo = dict(ip=m.group('ip'), request=request_object, status=m.group('status'), referrer=m.group('referrer'), useragent=m.group('useragent'), QueryObject=q_obj)
+    otherinfo = dict(ip=m.group('ip'), request=request_object, status=m.group('status'), referrer=m.group('referrer'), useragent=m.group('useragent'), QueryObject=q_obj, urlpath=path)
 
     if addcalltime:
         otherinfo["call_time"] = m.group('calltime')
